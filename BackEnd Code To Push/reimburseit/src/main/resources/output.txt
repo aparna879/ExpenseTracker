@@ -1,0 +1,19 @@
+[Company Name] INVOICE
+[Street Address]
+
+[City, ST ZIP]
+
+Phone: (000) 000-0000
+
+Name : Aparna Singhal
+
+Mobile : 8369023698
+
+Address : S-2 Sri Ranga Apartment, Iti layout, Bangalore
+
+Date : 03-11-2020
+Food Bill 900
+| TOTAL 900
+
+If you have any questions about this invoice, please contact
+[Name, Phone, email@address.com]

@@ -1,0 +1,7 @@
+:host ::ng-deep .mat-step-icon-selected {
+    background-color: green; 
+}
+
+::ng-deep .mat-horizontal-stepper-header{
+    pointer-events: none !important;
+}

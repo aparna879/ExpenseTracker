@@ -1,0 +1,134 @@
+<div class="container">
+    <div class="col-md-6">
+
+        <!-- Category-->
+        <form [formGroup]="addExpenseForm">
+            <div class="form-group">
+                <label for="sel1">Select Category:</label>
+                <select class="form-control" id="sel1" formControlName="category" *ngIf="categoriesFromDB">
+                    <option *ngFor="let item of categoriesFromDB" [value]="item">{{item}}</option>
+                </select>
+            </div>
+
+            <!-- Bulk Upload Files-->
+            <div>
+                <form [formGroup]="fileForm" enctype="multipart/form-data" (ngSubmit)="submitFiles()">
+                    <pre
+                        style="padding: auto;"><b>Upload Files in Bulk (OCR Based Expenditure Submission):</b>
+                        <input name="profile" type="file" multiple="multiple"
+                             (change)="onMultipleFileSelect($event)"/></pre>
+
+                    <div style="margin-top:5px; margin-bottom:5px;" class="text-center">
+                        <input type="submit" class="btn btn-primary" style="background-color: #4156B5;"
+                            value="Submit Files" />
+                    </div>
+                </form>
+            </div>
+
+            <!--Add Expense-->
+            <!--Button-->
+            <hr>
+            <div *ngIf="!addExpenseFlag" class="text-center" style="margin-top:5px; margin-bottom:5px;">
+                <button type="button" class="btn btn-primary" style="background-color: #4156B5;"
+                    (click)="addExpense()">Add New Expense Manually</button>
+            </div>
+
+            <form [formGroup]="nestedForm" *ngIf="addExpenseFlag">
+                <div *ngIf="addExpenseFlag"
+                    style="border-radius:10px; margin-top:5px;
+                        margin-bottom:5px; width:50%; margin: auto; border: 2px solid #d3d3d3;">
+                    
+                    <!-- Forced to be appended in a same line, due to <pre> tag -->
+                    <pre><input placeholder="Name of Expenditure" type="text" class="form-control" formControlName="nestedName"><input placeholder="Cost" type="number" class="form-control" formControlName="nestedCost"><input placeholder="Date of Expenditure" type="date" class="form-control" formControlName="nestedDate"><input name="singleFile" type="file" formControlName="nestedFile" (change)="onSingleFileSelect($event)"/></pre>
+
+                    <div class="text-center" style="margin-top:5px; margin-bottom:5px;">
+                        <input type="button" class="btn btn-primary" style="background-color: #4156B5;" value="Add"
+                            [disabled]="!nestedForm.valid" (click)="addToTable()" />
+                    </div>
+                </div>
+            </form>
+            <hr>
+
+            <!--Text Area-->
+            <div class="form-group">
+                <label for="comment">Comment:</label>
+                <textarea class="form-control" rows="5" id="comment" formControlName="description"></textarea>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <div class="float-right">
+            <p>
+                <b>Date Today: {{dateVar}} </b>
+            </p>
+        </div>
+
+        <!--Table-->
+        <table class="table table-bordered" style="margin-top:5px; margin-bottom:5px;">
+            <thead>
+                <tr>
+                    <th>Expense Name</th>
+                    <th>Cost</th>
+                    <th>Date of Expenditure</th>
+                    <th>Proof Submitted</th>
+                    <th>Remove</th>
+                    <th>Modify</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let recordA of recordsAuto; let i = index">
+                    <td>{{recordA.expensename}}</td>
+                    <td>{{recordA.expensecost}}</td>
+                    <td>{{recordA.expensedate}}</td>
+                    <td *ngIf="recordA.expensefile" style="color:#4156B5;">Yes</td>
+                    <td>&nbsp;</td>
+                    <td><button class="btn btn-primary" style="background-color: #4156B5;"
+                            (click)="editExpenseAuto(i)">Edit</button></td>
+                </tr>
+                <tr *ngFor="let recordB of recordsManual; let j = index">
+                    <td>{{recordB.expensename}}</td>
+                    <td>{{recordB.expensecost}}</td>
+                    <td>{{recordB.expensedate}}</td>
+                    <td *ngIf="recordB.expensefile; else fileAbsentB" style="color:#4156B5;">Yes</td>
+                    <ng-template #fileAbsentB>
+                        <td style="color:red;">No</td>
+                    </ng-template>
+                    <td><button class="btn btn-primary" style="background-color: #4156B5;"
+                            (click)="deleteExpenseManual(j)">Delete</button></td>
+                    <td><button class="btn btn-primary" style="background-color: #4156B5;"
+                            (click)="editExpenseManual(j)">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <!--Edit Expense-->
+        <span>
+            <div *ngIf="editFlag"
+                style="border-radius:10px; margin-top:20px; width:50%; margin: auto; border: 2px solid #d3d3d3;">
+                <form [formGroup]="editForm">
+                    <pre><input type="text" class="form-control" id="usr" placeholder="{{tempName}}" formControlName="editName"><input type="number" class="form-control" id="usr" placeholder="{{tempCost}}" formControlName="editCost"><input type="date" class="form-control" id="usr" min="2019-01-01" [max]="dateVar" placeholder="{{tempDate}}" formControlName="editDate"></pre>
+
+                    <div class="text-center" style="margin-top:5px; margin-bottom:5px;">
+                        <button type="button" class="btn btn-primary" style="background-color: #4156B5;"
+                            [disabled]="!editForm.valid" (click)="editTable()">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!--Submit-->
+        <div style="margin-top:auto; padding-left: 45%;">
+            <pre><b>Total Cost: {{total}}</b></pre>
+            <input type="button" class="btn btn-primary"
+                style="background-color: #4156B5; margin-top: 5px; margin-bottom: 5px;" value="Submit Expense"
+                [disabled]="!addExpenseForm.valid" (click)="submitForm()" />
+        </div>
+    </div>
+</div>

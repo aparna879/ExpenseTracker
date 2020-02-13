@@ -1,0 +1,63 @@
+ <mat-sidenav-container fullscreen >
+  <mat-sidenav #sidenav mode="over" class="app-sidenav" style="width: 250px !important;" >
+    
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <!-- <mat-icon mat-list-icon>android</mat-icon> -->
+        <span>{{name}}</span>
+      </mat-toolbar-row>
+      <!--future svg to go here-->
+      <!-- <span class="toolbar-filler"></span>            <span class="example-fill-remaining-space"> </span> -->        
+    </mat-toolbar>
+    <mat-list style="text-decoration: none;">
+      <mat-list-item *ngIf="ifNotAdmin">
+         <a mat-list-item class="sidenav-link" [routerLink]="['/view']" (click)="sidenav.toggle()" >
+          <mat-icon mat-list-icon>view_column</mat-icon>
+          <span class="title" mat-line>view expenses </span>            
+        </a>
+      </mat-list-item>
+      <!-- *ngIf="ifNotJunior" -->
+      <mat-list-item *ngIf="ifNotJunior"> 
+        <a mat-list-item class="sidenav-link" [routerLink]="['/pending']" (click)="sidenav.toggle()" >
+          <mat-icon mat-list-icon>access_time</mat-icon>
+          <span class="title" mat-line>pending approvals </span>            
+        </a>
+       </mat-list-item>
+       <mat-list-item *ngIf="ifNotAdmin"> 
+        <a  mat-list-item class="sidenav-link" [routerLink]="['/add']" (click)="sidenav.toggle()" >
+          <mat-icon mat-list-icon>add_box</mat-icon>
+          <span class="title"  mat-line>Add Expense</span>            
+        </a>
+      </mat-list-item>
+      <mat-list-item *ngIf="isAuthorized"> 
+        <a  mat-list-item class="sidenav-link" [routerLink]="['/report']" (click)="sidenav.toggle()" >
+          <mat-icon mat-list-icon>timeline</mat-icon>
+          <span class="title"  mat-line>Analytics Report</span>            
+        </a>
+      </mat-list-item>
+      <!-- <mat-list-item *ngIf="isAuthorized"> 
+        <a  mat-list-item class="sidenav-link" [routerLink]="['/logs']" (click)="sidenav.toggle()" >
+          <mat-icon mat-list-icon>android</mat-icon>
+          <span class="title"  mat-line>expense Logs</span>            
+        </a>
+      </mat-list-item>    -->
+     <mat-list-item *ngIf="login"> 
+      <a  mat-list-item class="sidenav-link" [routerLink]="['/login']" (click)="sidenav.toggle(); logOut();" >
+        <mat-icon mat-list-icon>undo</mat-icon>
+        <span class="title"  mat-line>Logout</span>            
+      </a>
+    </mat-list-item>
+  </mat-list>
+  </mat-sidenav>
+  <mat-toolbar id="appToolbar" [ngClass]="{'toolbar-fullscreen': (fullscreen$ | async)}" color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()" class="md-icon-button sidenav-toggle-button" [hidden]="sidenav.opened">
+            <mat-icon aria-label="Menu" class="material-icons">menu</mat-icon>
+    </button>
+    <h1 class="component-title">
+      <a class="title-link">{{title}}</a>
+    </h1>
+    <span class="toolbar-filler"></span>    
+  </mat-toolbar>
+  <router-outlet></router-outlet>
+   <!-- <button mat-raised-button color="primary" *ngIf="login" (click)="logOut()" >Logout&nbsp;<mat-icon> undo</mat-icon> </button> -->
+</mat-sidenav-container>
